@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <title>Crystal Game</title>
+</head>
+
+<body>
+    <!-- this container class is from bootstrap -->
+    <div class="container">
+        <section>
+            <div class="bg-success">Won: <span id="wins">None Yet</span></div>
+            <div class="bg-danger ">Lost: <span id="losses">None Yet</span></div>
+        </section>
+        <h1 id="random-num" class="bg-warning"></h1>
+        <h4>Click any button below:</h4>
+        <button class="crystal btn btn-info">?</button>
+        <button class="crystal btn btn-danger">?</button>
+        <button class="crystal btn btn-warning">?</button>
+        <button class="crystal btn btn-success">?</button>
+        <div class="bg-success bold">Your Current Score:
+            <h1 id="currScore"></h1></div>
+    </div>
+    <script>
+    var button = $('.crystal');
+    var ranNumEl = $('#random-num');
+    var winsEl = $('#wins');
+    var lossEl = $('#losses');
+    var userScoreEl = $('#currScore');
+    var totalScore = 0;
+    var randomNum = 0;
+    var buttonVals = [];
+    var thisIncrements = 0;
+    var currentButtonValue = 0;
+    var wins = 0;
+    var losses = 0;
+
+    //create random num and add to DOM
+    function setNums() {
+        randomNum = Math.floor((Math.random() * 120) + 19);
+        //attach the random number to the DOM
+        ranNumEl.html(randomNum);
+        userScoreEl.html(totalScore);
+    }
+
+    //adds the data-value attribute to the buttons...this is the hidden value i guess
+    function buttonAttr() {
+       
+        for (var i = 0; i < button.length; i++) {
+            buttonVals[i] = Math.floor((Math.random() * 12) + 1);
+        }
+
+        button.each(function() {
+            $(this).attr('data-value', buttonVals[thisIncrements]);
+            thisIncrements++;
+        })
+
+        console.log("button values: ", buttonVals);
+    }
+
+   
+    function resetVals() {
+        setNums();
+        currentButtonValue = 0;
+        totalScore = 0;
+        buttonVals = [];
+        thisIncrements = 0;
+        userScoreEl.html(totalScore)
+        buttonAttr();
+    }
+
+ 
+    function tallyUpScore(oldScore, newScore) {
+        return oldScore + newScore;
+    }
+
+ 
+    function clicksButton(event) {
+        console.log("the data-value is ", this.dataset.value);
+        
+        currentButtonValue = Number(this.dataset.value);
+    
+        totalScore = tallyUpScore(totalScore, currentButtonValue);
+        console.log("total score is ", totalScore);
+        userScoreEl.html(totalScore);
+
+        if (totalScore === randomNum) {
+            console.log("you won");
+            wins++;
+            winsEl.html(wins);
+            resetVals();
+        } else if (totalScore >= randomNum) {
+            console.log("you lost");
+            losses++;
+            lossEl.html(losses);
+            resetVals();
+        }
+
+    }
+
+
+    // This code will run once the site loads the html
+    $(function() {
+
+        setNums();
+        buttonAttr();
+        //this will run everytime a button is clicked and from here we will go to the clicksButton function
+        button.on('click', clicksButton);
+    });
+    </script>
+</body>
+
+</html>
